@@ -11,11 +11,14 @@ from Model import *
 if __name__ == '__main__':
     print("Simulation started...")
     env = Environment(num_agents=20, num_gates=1, max_x=50, max_y=50)
-    for agent_type in env.agents.keys():
-        for agent in env.agents[agent_type]:
-            agent.update_position(env.agents)
 
+    # Visuzalization crap
+    fig = plt.figure(figsize=(20,15))
+    
 
+    timesteps = 20
+    for step in range(timesteps):
+        env.timestep()
 
 
     print(str(env))

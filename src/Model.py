@@ -35,7 +35,7 @@ class Gate(Agent):
         # I'm a gate and don't need updates for now
         pass
 
-    def update_position(self):
+    def update_position(self, agents):
         # I'm a gate and don't need updates for now
         pass
 
@@ -44,7 +44,7 @@ class Human(Agent):
         super().__init__(environment)
 
     def timestep(self):
-        update_positions()
+        update_position()
 
     def update_position(self, agents):
         # TODO repelling/attraction between humans
@@ -53,8 +53,8 @@ class Human(Agent):
 
         # Gates "attraction force"
         for gate in agents["gates"]:
-            new_x_pos = self.pos[0] - gate.pos[0]
-            new_y_pos = self.pos[1] - gate.pos[1]
+            new_x_pos += (self.pos[0] - gate.pos[0] )  * gate.human_attr_force
+            new_y_pos += (self.pos[1] - gate.pos[1]) * gate.human_attr_force
 
         self.x_pos = new_x_pos
         self.y_pos = new_y_pos
@@ -68,6 +68,11 @@ class Environment():
 
         self.init_humans()
         self.init_gates(num_gates)
+
+    def timestep(self):
+        for agent_type in self.agents.keys():
+            for agent in self.agents[agent_type]:
+                agent.update_position(self.agents)
 
     def random_position(self):
         x = np.random.uniform(low=0, high=self.max_x)
@@ -86,6 +91,8 @@ class Environment():
             x.pos = self.random_position()
             self.agents["gates"].append(x)
 
+    def get_current_agents(self):
+        
 
     def __str__(self):
         return f"{self.__class__.__name__}: \n\tnum_agents: {self.num_agents} \
