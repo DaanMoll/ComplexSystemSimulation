@@ -5,7 +5,7 @@ from matplotlib import animation, rc
 
 DIMS = 2
 
-class Agent:
+class Agent(object):
     def __init__(self, environment):
         self.pos = np.zeros(DIMS)
         self.vel = np.zeros(DIMS)
@@ -22,6 +22,12 @@ class Agent:
     def update_posiition(self):
         pass
 
+    def get_pos(self):
+        pass
+
+    def set_pos(self):
+        pass
+
     def __str__(self):
         return f"{self.__class__.__name__}: pos: {self.pos} vel: {self.vel} active:{self.active}"
         __repr__ = __str__
@@ -29,7 +35,7 @@ class Agent:
 class Gate(Agent):
     def __init__(self, environment):
         super().__init__(environment)
-        self.human_attr_force = 10
+        self.human_attr_force = 1.05
 
     def timestep(self):
         # I'm a gate and don't need updates for now
@@ -37,6 +43,12 @@ class Gate(Agent):
 
     def update_position(self, agents):
         # I'm a gate and don't need updates for now
+        pass
+
+    def get_pos(self):
+        return self.pos
+
+    def set_pos(self):
         pass
 
 class Human(Agent):
@@ -53,11 +65,16 @@ class Human(Agent):
 
         # Gates "attraction force"
         for gate in agents["gates"]:
-            new_x_pos += (self.pos[0] - gate.pos[0] )  * gate.human_attr_force
-            new_y_pos += (self.pos[1] - gate.pos[1]) * gate.human_attr_force
+            new_x_pos = (self.pos[0] + abs((self.pos[0] - gate.pos[0] )  * gate.human_attr_force)) % 100
+            new_y_pos = (self.pos[1] + abs((self.pos[1] - gate.pos[1]) * gate.human_attr_force)) % 100
 
-        self.x_pos = new_x_pos
-        self.y_pos = new_y_pos
+        self.pos = new_x_pos, new_y_pos
+
+    def get_pos(self):
+        return self.pos
+
+    def set_pos(self):
+        pass
 
 class Environment():
     def __init__(self, num_agents, num_gates, max_x, max_y):
@@ -65,14 +82,23 @@ class Environment():
         self.max_x = max_x
         self.max_y = max_y
         self.num_agents = num_agents
-
+        self.poslist = []
         self.init_humans()
         self.init_gates(num_gates)
+        for agent_type in self.agents.keys():
+            for agent in self.agents[agent_type]:
+                self.poslist.append(agent.get_pos())
 
-    def timestep(self):
+    def timestep(self, return_positions):
+        self.poslist = []
         for agent_type in self.agents.keys():
             for agent in self.agents[agent_type]:
                 agent.update_position(self.agents)
+                if return_positions:
+                    self.poslist.append(agent.get_pos())
+        if return_positions:
+            # print(self.poslist)
+            return self.poslist
 
     def random_position(self):
         x = np.random.uniform(low=0, high=self.max_x)
@@ -86,13 +112,11 @@ class Environment():
             self.agents["humans"].append(new_agent)
 
     def init_gates(self, num_gates):
-        for gate in range(num_gates):
-            x = Gate(self)
-            x.pos = self.random_position()
-            self.agents["gates"].append(x)
+        for _ in range(num_gates):
+            gate = Gate(self)
+            gate.pos = self.random_position()
+            self.agents["gates"].append(gate)
 
-    def get_current_agents(self):
-        
 
     def __str__(self):
         return f"{self.__class__.__name__}: \n\tnum_agents: {self.num_agents} \
