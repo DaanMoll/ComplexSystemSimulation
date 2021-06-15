@@ -123,6 +123,7 @@ class Human(Agent):
         force = self.forces(agents)
         pos_change = tuple(force * DT)
         self.pos = tuple(np.add(self.pos, pos_change))
+        
 
     def get_pos(self):
         return self.pos
