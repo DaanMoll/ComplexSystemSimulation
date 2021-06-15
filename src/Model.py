@@ -11,16 +11,18 @@ class Environment():
         self.max_x = max_x
         self.max_y = max_y
         self.num_agents = num_agents
+        self.num_gates = num_gates
         self.poslist = []
+
         self.init_humans()
-        self.init_gates(num_gates)
+        self.init_gates()
+
         for agent_type in self.agents.keys():
             for agent in self.agents[agent_type]:
                 self.poslist.append(agent.get_pos())
 
     def timestep(self, return_positions):
         # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
-        
         self.poslist = []
 
         for agent_type in self.agents.keys():
@@ -43,10 +45,19 @@ class Environment():
             new_agent.pos = self.random_position()
             self.agents["humans"].append(new_agent)
 
-    def init_gates(self, num_gates):
-        for _ in range(num_gates):
+    def init_gates(self):
+        # for _ in range(num_gates):
+        #     gate = Gate(self)
+        #     gate.pos = (0, self.max_y/2)
+        #     self.agents["gates"].append(gate)
+
+        gate = Gate(self)
+        gate.pos = (0, self.max_y/2)
+        self.agents["gates"].append(gate)
+
+        if self.num_gates == 2:
             gate = Gate(self)
-            gate.pos = (0, self.max_y/2)
+            gate.pos = (self.max_x, self.max_y/2)
             self.agents["gates"].append(gate)
 
     def delete_agent(self, agent):

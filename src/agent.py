@@ -21,6 +21,7 @@ DT = 0.01
 HUMAN_ATTR_FORCE = 10
 HUMAN_REPULS_FORCE = 10
 
+@nb.njit(fastmath=True)
 def DistSquared(pos1, pos2):
     diffx = pos1[0] - pos2[0]
     diffy = pos1[1] - pos2[1]
@@ -45,16 +46,13 @@ class Agent(object):
     def set_pos(self):
         pass
 
-    def delete(self):
-        pass
-
     def __str__(self):
         return f"{self.__class__.__name__}: pos: {self.pos} vel: {self.vel} active:{self.active}"
         __repr__ = __str__
 
 
 class Gate(Agent):
-    def __init__(self, environment, interval=50):
+    def __init__(self, environment, interval=5):
         super().__init__(environment)
         self.human_attr_force = 1.05
         self.timesteps_passed = 0
@@ -78,7 +76,7 @@ class Gate(Agent):
                     closest = distance
                     closest_agent = agent
 
-            if closest < 2: #check 10 idk what is good.
+            if closest < 0.5: #check 10 idk what is good.
                 print(closest)
                 self.environment.delete_agent(closest_agent)
                 self.timesteps_passed = 0
@@ -91,9 +89,6 @@ class Gate(Agent):
 
     def set_pos(self):
         pass
-
-    def delete(self, agent):
-        self.environment.delete(agent)
 
 
 class Human(Agent):
