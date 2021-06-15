@@ -20,6 +20,10 @@ class AnimatedScatter(object):
 
         self.scat = self.ax.scatter(x,y)
         self.ax.axis([0, 100, 0, 100])
+
+        #TODO not hardcodded but i dunno
+        self.ax.vlines(0, 0, 48, linewidth=4, color='b')
+        self.ax.vlines(0, 52, 100, linewidth=4, color='b')
         # For FuncAnimation's sake, we need to return the artist we'll be using
         # Note that it expects a sequence of artists, thus the trailing comma.
         return self.scat,

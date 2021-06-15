@@ -11,7 +11,7 @@ def norm(l):
     return np.sqrt(s)
 
 DIMS = 2
-R = 0.1
+R = 0.5
 
 CLOSE_DISTANCE = 5*R
 TOUCH_DISTANCE = 2*R
@@ -21,6 +21,10 @@ DT = 0.01
 HUMAN_ATTR_FORCE = 10
 HUMAN_REPULS_FORCE = 10
 
+def DistSquared(pos1, pos2):
+    diffx = pos1[0] - pos2[0]
+    diffy = pos1[1] - pos2[1]
+    return (diffx*diffx + diffy*diffy)
 
 class Agent(object):
     def __init__(self, environment):
@@ -41,15 +45,20 @@ class Agent(object):
     def set_pos(self):
         pass
 
+    def delete(self):
+        pass
+
     def __str__(self):
         return f"{self.__class__.__name__}: pos: {self.pos} vel: {self.vel} active:{self.active}"
         __repr__ = __str__
 
 
 class Gate(Agent):
-    def __init__(self, environment):
+    def __init__(self, environment, interval=50):
         super().__init__(environment)
         self.human_attr_force = 1.05
+        self.timesteps_passed = 0
+        self.interval = interval
 
     def timestep(self):
         # I'm a gate and don't need updates for now
@@ -57,6 +66,24 @@ class Gate(Agent):
 
     def update_position(self, agents):
         # I'm a gate and don't need updates for now
+        closest = 10000
+        closest_agent = None
+
+        if self.timesteps_passed >= self.interval:
+            # get closest agent and remove it from system
+            for agent in agents["humans"]:
+                distance = DistSquared(self.pos, agent.pos)
+
+                if distance < closest:
+                    closest = distance
+                    closest_agent = agent
+
+            if closest < 2: #check 10 idk what is good.
+                print(closest)
+                self.environment.delete_agent(closest_agent)
+                self.timesteps_passed = 0
+
+        self.timesteps_passed += 1
         pass
 
     def get_pos(self):
@@ -64,6 +91,9 @@ class Gate(Agent):
 
     def set_pos(self):
         pass
+
+    def delete(self, agent):
+        self.environment.delete(agent)
 
 
 class Human(Agent):
@@ -108,7 +138,7 @@ class Human(Agent):
             if vec_norm < CLOSE_DISTANCE:
 
                 # Determine strength of repulsion
-                factor = CLOSE_DISTANCE / vec_norm
+                factor = CLOSE_DISTANCE / (vec_norm+1)
                 norm_direction_vec = direction_vec / vec_norm
                 F += HUMAN_REPULS_FORCE * norm_direction_vec * factor
 

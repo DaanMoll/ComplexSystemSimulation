@@ -19,7 +19,7 @@ class Environment():
                 self.poslist.append(agent.get_pos())
 
     def timestep(self, return_positions):
-        print("hio", len(self.agents["humans"]), self.agents["gates"])
+        # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
         
         self.poslist = []
 
@@ -48,6 +48,10 @@ class Environment():
             gate = Gate(self)
             gate.pos = (0, self.max_y/2)
             self.agents["gates"].append(gate)
+
+    def delete_agent(self, agent):
+        self.agents["humans"].remove(agent)
+        self.num_agents -= 1
 
     def __str__(self):
         return f"{self.__class__.__name__}: \n\tnum_agents: {self.num_agents} \
