@@ -13,10 +13,10 @@ if __name__ == '__main__':
     max_x=100
     max_y=100
 
-    num_agents = int(round(max_x*max_y * density))
+    num_agents = int(round(((max_x*max_y)/size_agent) * density))
     print(num_agents)
 
-
+    num_agents=10
     env = Environment(num_agents=num_agents, num_gates=1, max_x=max_x, max_y=max_y)
     print(str(env))
     aniclass = AnimatedScatter(env)

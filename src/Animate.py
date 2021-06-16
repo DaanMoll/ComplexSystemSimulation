@@ -12,22 +12,32 @@ class AnimatedScatter(object):
         # Then setup FuncAnimation.
         self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
                                           init_func=self.setup_plot, blit=True)
-        self.ani.to_html5_video()
+        with open("teeestvideo.html", "w") as f:
+            print(self.ani.to_html5_video(), file=f)
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
         y = [x[1] for x in self.env.poslist]
+        c = [0 for _ in range(len(x))]
+        c[-1] = 1
 
-        self.scat = self.ax.scatter(x[:-1],y[:-1], 'b', x[-1], y[-1], 'r')
+        # self.scat = self.ax.scatter(x[:-1],y[:-1], 'b', x[-1], y[-1], 'r')
+        # self.ax.set_title(f"hoi {self.env.num_agents}")
+        self.title = self.ax.text(0.5,0.85, "", bbox={'facecolor':'w', 'alpha':0.5, 'pad':5},
+                transform=self.ax.transAxes, ha="center")
+
+        self.scat = self.ax.scatter(x[:-1], y[:-1], c=c[:-1], cmap='winter')
+        self.ax.scatter(x[-1], y[-1], c=c[-1], marker='s', cmap='winter')
+        # self.scat(x[-1], y[-1], 'b')
         self.ax.axis([0, 100, 0, 100])
 
         #TODO not hardcodded but i dunno
-        self.ax.vlines(0, 0, 49, linewidth=4, color='b')
-        self.ax.vlines(0, 51, 100, linewidth=4, color='b')
+        self.ax.vlines(0, 0, 49, linewidth=4, color='black')
+        self.ax.vlines(0, 51, 100, linewidth=4, color='black')
 
         if self.env.num_gates == 2:
-            self.ax.vlines(self.env.max_x, 0, 49, linewidth=4, color='b')
-            self.ax.vlines(self.env.max_x, 51, 100, linewidth=4, color='b')
+            self.ax.vlines(self.env.max_x, 0, 49, linewidth=4, color='black')
+            self.ax.vlines(self.env.max_x, 51, 100, linewidth=4, color='black')
 
         # For FuncAnimation's sake, we need to return the artist we'll be using
         # Note that it expects a sequence of artists, thus the trailing comma.
@@ -35,15 +45,23 @@ class AnimatedScatter(object):
 
     def data_stream(self):
         while True:
+            # self.ax.set_title(f"hoi {self.env.num_agents}")
             self.env.timestep(True)
             yield self.env.poslist
 
     def update(self, i):
         """Update the scatter plot."""
+        
         data = next(self.stream)
-        print(data)
+        # self.ax.text(0.5,0.85, "hoi", bbox={'facecolor':'w', 'alpha':0.5, 'pad':5}, transform=self.ax.transAxes, ha="center")
+        self.title.set_text(f"Agents = {self.env.num_agents}")
+
         # print(data)
         # Set x and y data...
         # self.scat.set_offsets(data[:-1], 'b', data[-1], 'r')
+        c = [5 for _ in range(len(data))]
+        c[-1] = 2
+
         self.scat.set_offsets(data)
-        return self.scat,
+        self.scat.set_array(np.array(c))
+        return self.scat, self.title,
