@@ -18,7 +18,7 @@ class AnimatedScatter(object):
         x = [x[0] for x in self.env.poslist]
         y = [x[1] for x in self.env.poslist]
 
-        self.scat = self.ax.scatter(x,y)
+        self.scat = self.ax.scatter(x[:-1],y[:-1], 'b', x[-1], y[-1], 'r')
         self.ax.axis([0, 100, 0, 100])
 
         #TODO not hardcodded but i dunno
@@ -28,6 +28,7 @@ class AnimatedScatter(object):
         if self.env.num_gates == 2:
             self.ax.vlines(self.env.max_x, 0, 49, linewidth=4, color='b')
             self.ax.vlines(self.env.max_x, 51, 100, linewidth=4, color='b')
+
         # For FuncAnimation's sake, we need to return the artist we'll be using
         # Note that it expects a sequence of artists, thus the trailing comma.
         return self.scat,
@@ -40,7 +41,9 @@ class AnimatedScatter(object):
     def update(self, i):
         """Update the scatter plot."""
         data = next(self.stream)
+        print(data)
         # print(data)
         # Set x and y data...
+        # self.scat.set_offsets(data[:-1], 'b', data[-1], 'r')
         self.scat.set_offsets(data)
         return self.scat,

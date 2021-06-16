@@ -155,3 +155,9 @@ class Human(Agent):
     def set_pos(self):
         #TODO
         pass
+
+class Wall(Agent):
+    def __init__(self, environment, pos):
+        super().__init__(environment)
+        self.pos = pos
+    
