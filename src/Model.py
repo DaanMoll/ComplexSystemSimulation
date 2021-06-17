@@ -38,8 +38,8 @@ class Environment():
             return self.poslist
 
     def random_position(self):
-        x = np.random.uniform(low=0, high=self.max_x)
-        y = np.random.uniform(low=0, high=self.max_y)
+        x = np.random.uniform(low=11, high=99)
+        y = np.random.uniform(low=1, high=99)
         return (x, y)
 
     def init_humans(self):
@@ -49,7 +49,7 @@ class Environment():
 
     def init_gates(self):
         gate = Gate(self)
-        gate.pos = (0, self.max_y/2)
+        gate.pos = (3, self.max_y/2)
         self.agents["gates"].append(gate)
 
         if self.num_gates == 2:
