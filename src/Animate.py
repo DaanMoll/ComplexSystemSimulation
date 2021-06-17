@@ -63,9 +63,9 @@ class AnimatedScatter(object):
         self.title.set_text(f"Agents = {self.env.num_agents}")
         # print(self.env.num_agents)
         
-        c = [5 for _ in range(len(data))]
-        c[-1] = 2
+        # c = [5 for _ in range(len(data))]
+        # c[-1] = 2
 
-        self.scat.set_offsets(data)
-        self.scat.set_array(np.array(c))
+        self.scat.set_offsets(data[:-1])
+        # self.scat.set_array(np.array(c))
         return self.scat, self.title,

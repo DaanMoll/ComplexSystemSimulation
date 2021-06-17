@@ -120,10 +120,10 @@ class Human(Agent):
                 norm = vec_norm
                 closest_gate = gate
 
-        self.closest_gate_pos = closest_gate.pos
+        self.goal_gate_pos = closest_gate.pos
         self.orig_distance = vec_norm
 
-        if self.closest_gate_pos == None:
+        if self.goal_gate_pos == None:
             print("ERROR NO CLOSEST GATE", self)
 
     def timestep(self):
@@ -138,7 +138,7 @@ class Human(Agent):
         # Gates "attraction force"
         
         # Get the direction vector between agent and gate
-        direction_vec_test = np.subtract(self.closest_gate_pos, self.pos)
+        direction_vec_test = np.subtract(self.goal_gate_pos, self.pos)
         norm = np.linalg.norm(direction_vec_test)
         direction_vec = direction_vec_test / norm
 
@@ -169,24 +169,24 @@ class Human(Agent):
                 friction = friction*max(-TOUCH_DISTANCE + COMPLETE_STOP + vec_norm, 0.1) / R
                 
         
-            # Wall Forces
-            for wall in HWALLS:
+        # Wall Forces
+        for wall in HWALLS:
+            
+            # Check if just underneath or above a wall
+            if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2] + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
+                # Determine distance
+                dist = wall[2] - self.pos[1] 
                 
-                # Check if just underneath or above a wall
-                if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2] + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
-                    # Determine distance
-                    dist = wall[2] - self.pos[1] 
-                    
-                    F -= WALL_REPULS_FORCE/(dist) * np.array([0,1])
+                F -= WALL_REPULS_FORCE/(dist) * np.array([0,1])
 
 
-            for wall in VWALLS:
-                # Check if just underneath or above a wall
-                if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2] + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
-                    # Determine distance
-                    dist = wall[2] - self.pos[0] 
-                    
-                    F -= WALL_REPULS_FORCE/(dist) * np.array([1,0])
+        for wall in VWALLS:
+            # Check if just underneath or above a wall
+            if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2] + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
+                # Determine distance
+                dist = wall[2] - self.pos[0] 
+                
+                F -= WALL_REPULS_FORCE/(dist) * np.array([1,0])
 
 
 
@@ -204,9 +204,4 @@ class Human(Agent):
     def set_pos(self):
         #TODO
         pass
-
-class Wall(Agent):
-    def __init__(self, environment, pos):
-        super().__init__(environment)
-        self.pos = pos
     
