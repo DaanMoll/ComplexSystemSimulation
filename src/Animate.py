@@ -11,9 +11,9 @@ class AnimatedScatter(object):
         self.fig, self.ax = plt.subplots()
         # Then setup FuncAnimation.
         self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                          init_func=self.setup_plot, blit=True)
-        with open("teeestvideo.html", "w") as f:
-            print(self.ani.to_html5_video(), file=f)
+                                          init_func=self.setup_plot, blit=True, save_count=20)
+        # put save count on 2k if we want to save
+        self.ani.save("test.mp4")
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
@@ -55,10 +55,8 @@ class AnimatedScatter(object):
         data = next(self.stream)
         # self.ax.text(0.5,0.85, "hoi", bbox={'facecolor':'w', 'alpha':0.5, 'pad':5}, transform=self.ax.transAxes, ha="center")
         self.title.set_text(f"Agents = {self.env.num_agents}")
-
-        # print(data)
-        # Set x and y data...
-        # self.scat.set_offsets(data[:-1], 'b', data[-1], 'r')
+        # print(self.env.num_agents)
+        
         c = [5 for _ in range(len(data))]
         c[-1] = 2
 

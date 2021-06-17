@@ -14,14 +14,17 @@ class Environment():
         self.num_gates = num_gates
         self.poslist = []
 
-        self.init_humans()
+        self.timesteps = 0
+
         self.init_gates()
+        self.init_humans()
 
         for agent_type in self.agents.keys():
             for agent in self.agents[agent_type]:
                 self.poslist.append(agent.get_pos())
 
     def timestep(self, return_positions):
+        self.timesteps += 1
         # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
         self.poslist = []
 
@@ -41,16 +44,10 @@ class Environment():
 
     def init_humans(self):
         for i in range(self.num_agents):
-            new_agent = Human(self)
-            new_agent.pos = self.random_position()
+            new_agent = Human(self, self.random_position())
             self.agents["humans"].append(new_agent)
 
     def init_gates(self):
-        # for _ in range(num_gates):
-        #     gate = Gate(self)
-        #     gate.pos = (0, self.max_y/2)
-        #     self.agents["gates"].append(gate)
-
         gate = Gate(self)
         gate.pos = (0, self.max_y/2)
         self.agents["gates"].append(gate)
@@ -61,6 +58,9 @@ class Environment():
             self.agents["gates"].append(gate)
 
     def delete_agent(self, agent):
+        # TODO implement with orig_distance and time passed how long agent took
+        # and other things we want to know
+        print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
         self.agents["humans"].remove(agent)
         self.num_agents -= 1
 

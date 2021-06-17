@@ -21,6 +21,10 @@ if __name__ == '__main__':
     print(str(env))
     aniclass = AnimatedScatter(env)
     plt.show()
+    """
+    meegeven:
+    walls, locaties
+    """
 
     print("klaar")
 

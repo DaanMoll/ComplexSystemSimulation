@@ -22,10 +22,10 @@ HUMAN_ATTR_FORCE = 10
 HUMAN_REPULS_FORCE = 10
 
 @nb.njit(fastmath=True)
-def DistSquared(pos1, pos2):
+def Dist(pos1, pos2):
     diffx = pos1[0] - pos2[0]
     diffy = pos1[1] - pos2[1]
-    return (diffx*diffx + diffy*diffy)
+    return np.sqrt((diffx*diffx + diffy*diffy))
 
 class Agent(object):
     def __init__(self, environment):
@@ -70,14 +70,13 @@ class Gate(Agent):
         if self.timesteps_passed >= self.interval:
             # get closest agent and remove it from system
             for agent in agents["humans"]:
-                distance = DistSquared(self.pos, agent.pos)
+                distance = Dist(self.pos, agent.pos)
 
                 if distance < closest:
                     closest = distance
                     closest_agent = agent
 
             if closest < 0.5: #check 10 idk what is good.
-                print(closest)
                 self.environment.delete_agent(closest_agent)
                 self.timesteps_passed = 0
 
@@ -92,8 +91,27 @@ class Gate(Agent):
 
 
 class Human(Agent):
-    def __init__(self, environment):
+    def __init__(self, environment, pos):
         super().__init__(environment)
+        self.pos = pos
+
+        norm = np.inf
+        closest_gate = None
+
+        for gate in self.environment.agents["gates"]:
+            direction_vec_test = np.subtract(gate.pos, self.pos)
+            vec_norm = np.linalg.norm(direction_vec_test)
+
+            # If it is the closest gate, save its normalised version
+            if vec_norm < norm: # dan vec_norm altijd norm bij 1 gate
+                norm = vec_norm
+                closest_gate = gate
+
+        self.closest_gate_pos = closest_gate.pos
+        self.orig_distance = vec_norm
+
+        if self.closest_gate_pos == None:
+            print("ERROR NO CLOSEST GATE", self)
 
     def timestep(self):
         self.update_position()
@@ -105,15 +123,11 @@ class Human(Agent):
         norm = np.inf
 
         # Gates "attraction force"
-        for gate in agents["gates"]:
-            # Get the direction vector between agent and gate
-            direction_vec_test = np.subtract(gate.pos, self.pos)
-            vec_norm = np.linalg.norm(direction_vec_test)
-
-            # If it is the closest gate, save its normalised version
-            if vec_norm < norm:
-                direction_vec = direction_vec_test / vec_norm
-                norm = vec_norm
+        
+        # Get the direction vector between agent and gate
+        direction_vec_test = np.subtract(self.closest_gate_pos, self.pos)
+        norm = np.linalg.norm(direction_vec_test)
+        direction_vec = direction_vec_test / norm
 
         # Add force to the total force
         F += direction_vec * HUMAN_ATTR_FORCE
