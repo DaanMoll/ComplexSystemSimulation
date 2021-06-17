@@ -11,7 +11,7 @@ def norm(l):
     return np.sqrt(s)
 
 DIMS = 2
-R = 0.5
+R = 1.5
 
 CLOSE_DISTANCE = 5*R
 TOUCH_DISTANCE = 2*R
@@ -19,13 +19,26 @@ COMPLETE_STOP = R
 DT = 0.01
 
 HUMAN_ATTR_FORCE = 10
-HUMAN_REPULS_FORCE = 10
+HUMAN_REPULS_FORCE = 5
+
+#xmin, xmax, y
+HWALLS = np.array([[10, 100, 100], 
+                     [10, 100, 0.00],
+                     [0, 10, 45],
+                     [0, 10, 55]])
+
+#ymin, ymax, x                 
+VWALLS = np.array([[10, 100, 100], 
+                     [0, 46, 10],
+                     [54, 100, 10]])
+
+WALL_REPULS_FORCE = 1
 
 @nb.njit(fastmath=True)
-def DistSquared(pos1, pos2):
+def Dist(pos1, pos2):
     diffx = pos1[0] - pos2[0]
     diffy = pos1[1] - pos2[1]
-    return (diffx*diffx + diffy*diffy)
+    return np.sqrt((diffx*diffx + diffy*diffy))
 
 class Agent(object):
     def __init__(self, environment):
@@ -52,7 +65,7 @@ class Agent(object):
 
 
 class Gate(Agent):
-    def __init__(self, environment, interval=5):
+    def __init__(self, environment, interval=1):
         super().__init__(environment)
         self.human_attr_force = 1.05
         self.timesteps_passed = 0
@@ -70,13 +83,13 @@ class Gate(Agent):
         if self.timesteps_passed >= self.interval:
             # get closest agent and remove it from system
             for agent in agents["humans"]:
-                distance = DistSquared(self.pos, agent.pos)
+                distance = Dist(self.pos, agent.pos)
 
                 if distance < closest:
                     closest = distance
                     closest_agent = agent
 
-            if closest < 0.5: #check 10 idk what is good.
+            if closest < 2: #check 10 idk what is good.
                 print(closest)
                 self.environment.delete_agent(closest_agent)
                 self.timesteps_passed = 0
@@ -140,6 +153,28 @@ class Human(Agent):
             # Friction forces
             if vec_norm < TOUCH_DISTANCE:
                 friction = friction*max(-TOUCH_DISTANCE + COMPLETE_STOP + vec_norm, 0.1) / R
+                
+        
+            # Wall Forces
+            for wall in HWALLS:
+                
+                # Check if just underneath or above a wall
+                if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2] + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
+                    # Determine distance
+                    dist = wall[2] - self.pos[1] 
+                    
+                    F -= WALL_REPULS_FORCE/(dist) * np.array([0,1])
+
+
+            for wall in VWALLS:
+                # Check if just underneath or above a wall
+                if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2] + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
+                    # Determine distance
+                    dist = wall[2] - self.pos[0] 
+                    
+                    F -= WALL_REPULS_FORCE/(dist) * np.array([1,0])
+
+
 
         F = friction * F
         return F

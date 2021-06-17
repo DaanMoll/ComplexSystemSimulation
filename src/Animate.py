@@ -26,14 +26,20 @@ class AnimatedScatter(object):
         self.title = self.ax.text(0.5,0.85, "", bbox={'facecolor':'w', 'alpha':0.5, 'pad':5},
                 transform=self.ax.transAxes, ha="center")
 
-        self.scat = self.ax.scatter(x[:-1], y[:-1], c=c[:-1], cmap='winter')
-        self.ax.scatter(x[-1], y[-1], c=c[-1], marker='s', cmap='winter')
+        self.scat = self.ax.scatter(x[:-1], y[:-1], c=c[:-1], cmap='winter',  s = 500)
+        self.ax.scatter(x[-1], y[-1], c=c[-1], marker='s', cmap='winter', s = 100)
         # self.scat(x[-1], y[-1], 'b')
-        self.ax.axis([0, 100, 0, 100])
+        self.ax.axis([5, 100, 0, 100])
 
         #TODO not hardcodded but i dunno
-        self.ax.vlines(0, 0, 49, linewidth=4, color='black')
-        self.ax.vlines(0, 51, 100, linewidth=4, color='black')
+        self.ax.vlines(100, 0, 100, linewidth=4, color='black')
+        self.ax.vlines(10, 0, 46, linewidth=4, color='black')
+        self.ax.vlines(10, 54, 100, linewidth=4, color='black')
+        
+        self.ax.hlines(0, 10, 100, linewidth=4, color='black')
+        self.ax.hlines(100, 10, 100, linewidth=4, color='black')
+        self.ax.hlines(45, 0, 10, linewidth=4, color='black')
+        self.ax.hlines(55, 0, 10, linewidth=4, color='black')
 
         if self.env.num_gates == 2:
             self.ax.vlines(self.env.max_x, 0, 49, linewidth=4, color='black')
