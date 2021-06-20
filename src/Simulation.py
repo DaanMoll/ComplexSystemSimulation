@@ -5,8 +5,6 @@ from Utils import HWALLS, VWALLS
 from Logger import Logger
 from constant import LOGGING_PATH
 import os
-import math
-from extended_int import int_inf
 
 # Based on https://stackoverflow.com/questions/9401658/how-to-animate-a-scatter-plot
 class Simulation(object):
