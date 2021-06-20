@@ -2,11 +2,22 @@ import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 import numpy as np
 from Utils import HWALLS, VWALLS
-
+from Logger import Logger
+from constant import LOGGING_PATH
+import os
+import math
+from extended_int import int_inf
 
 # Based on https://stackoverflow.com/questions/9401658/how-to-animate-a-scatter-plot
-class AnimatedScatter(object):
-    def __init__(self, env):
+class Simulation(object):
+    def __init__(self, env, logging=False, name=None, animate=True):
+        self.logger = None
+        if logging:
+            if not os.path.exists(LOGGING_PATH):
+                os.mkdir(LOGGING_PATH)
+            self.logger = Logger(LOGGING_PATH, filename=name)
+            print(f"Logging enabled for file: {self.logger.filename}")
+
         self.env = env
         self.stream = self.data_stream()
 
@@ -14,9 +25,10 @@ class AnimatedScatter(object):
         self.fig, self.ax = plt.subplots(figsize=(32, 32))
         # Then setup FuncAnimation.
         self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                          init_func=self.setup_plot, blit=True, save_count=2000)
+                                          init_func=self.setup_plot, blit=True, save_count=20)
         # put save count on 2k if we want to save
-        self.ani.save("../../test2.mp4")
+        if animate:
+            self.ani.save("../../test2.mp4")
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
@@ -39,8 +51,11 @@ class AnimatedScatter(object):
         return self.scat,
 
     def data_stream(self):
+        # TODO might be better to just return the positions
         while True:
             self.env.timestep(True)
+            if self.logger != None:
+                self.logger.save_position_step(self.env.poslist)
             yield self.env.poslist
 
     def update(self, i):

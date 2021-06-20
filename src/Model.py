@@ -6,6 +6,7 @@ from Agent import *
 from Utils import *
 from tqdm import tqdm
 
+
 class Environment():
     def __init__(self, num_agents, max_x, max_y):
         self.agents = {"humans": [], "gates": []}
@@ -23,7 +24,7 @@ class Environment():
             for agent in self.agents[agent_type]:
                 self.poslist.append(agent.pos)
 
-    def timestep(self, return_positions):
+    def timestep(self, return_positions=False):
         self.timesteps += 1
         # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
         self.poslist = []
