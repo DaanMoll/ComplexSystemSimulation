@@ -22,7 +22,8 @@ class Logger():
         if not self.has_header:
             self.columns.append("timestep")
             print(f"saving {self.output_path}")
-            self.columns.extend([f"agent_{i}_{xy}" for i in range(len(positions)) for xy in ("x", "y") ])
+            self.columns.extend([f"agent_{i}_{xy}" for i in range(len(positions) - 2) for xy in ("x", "y") ])
+            self.columns.extend([f"gate{i}_{xy}" for i in range(2) for xy in ("x", "y") ])
             with open(self.output_path, 'w+', newline ='') as file:
                 write = csv.writer(file)
                 write.writerows([self.columns])
