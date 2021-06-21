@@ -41,10 +41,6 @@ class AnimatedScatter(object):
         self.ax.hlines(45, 0, 10, linewidth=4, color='black')
         self.ax.hlines(55, 0, 10, linewidth=4, color='black')
 
-        if self.env.num_gates == 2:
-            self.ax.vlines(self.env.max_x, 0, 49, linewidth=4, color='black')
-            self.ax.vlines(self.env.max_x, 51, 100, linewidth=4, color='black')
-
         # For FuncAnimation's sake, we need to return the artist we'll be using
         # Note that it expects a sequence of artists, thus the trailing comma.
         return self.scat,

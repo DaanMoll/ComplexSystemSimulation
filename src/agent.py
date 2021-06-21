@@ -2,13 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 import numba as nb
+from utils import *
 
-@nb.njit(fastmath=True)
-def norm(l):
-    s = 0.
-    for i in range(l.shape[0]):
-        s += l[i]**2
-    return np.sqrt(s)
 
 DIMS = 2
 R = 1.5
@@ -20,32 +15,32 @@ DT = 0.01
 
 HUMAN_ATTR_FORCE = 10
 HUMAN_REPULS_FORCE = 5
+GATE_SWITCH_THRESHOLD = 3
 
 #xmin, xmax, y
-HWALLS = np.array([[10, 100, 100], 
+HWALLS = np.array([[10, 100, 100],
                      [10, 100, 0.00],
                      [0, 10, 45],
                      [0, 10, 55]])
 
-#ymin, ymax, x                 
-VWALLS = np.array([[10, 100, 100], 
+#ymin, ymax, x
+VWALLS = np.array([[10, 100, 100],
                      [0, 46, 10],
                      [54, 100, 10]])
 
-WALL_REPULS_FORCE = 1
+WALL_REPULS_FORCE = 5
 
 @nb.njit(fastmath=True)
 def Dist(pos1, pos2):
     diffx = pos1[0] - pos2[0]
     diffy = pos1[1] - pos2[1]
-    return np.sqrt((diffx*diffx + diffy*diffy))
+    return np.sqrt(diffx*diffx + diffy*diffy)
 
 class Agent(object):
     def __init__(self, environment):
         self.pos = np.zeros(DIMS)
         self.vel = np.zeros(DIMS)
         self.environment = environment
-        self.active = True
 
     def update_position(self, neighbors):
         pass
@@ -70,28 +65,34 @@ class Gate(Agent):
         self.human_attr_force = 1.05
         self.timesteps_passed = 0
         self.interval = interval
+        self.type = None
 
     def timestep(self):
         # I'm a gate and don't need updates for now
         pass
 
     def update_position(self, agents):
-        # I'm a gate and don't need updates for now
         closest = 10000
         closest_agent = None
+        # Skip if entrance of alley
+
+        if self.type == GATE_TYPES.entrance:
+            return
 
         if self.timesteps_passed >= self.interval:
             # get closest agent and remove it from system
             for agent in agents["humans"]:
+                if agent.pos[0] < 0.1:
+                    self.environment.delete_agent(agent)
                 distance = Dist(self.pos, agent.pos)
 
-                if distance < closest:
-                    closest = distance
-                    closest_agent = agent
+                # if distance < closest:
+                #     closest = distance
+                #     closest_agent = agent
 
-            if closest < 0.5: #check 10 idk what is good.
-                self.environment.delete_agent(closest_agent)
-                self.timesteps_passed = 0
+            # if closest < 1.2: #check 10 idk what is good.
+            #     self.environment.delete_agent(closest_agent)
+            #     self.timesteps_passed = 0
 
         self.timesteps_passed += 1
         pass
@@ -109,7 +110,7 @@ class Human(Agent):
         self.pos = pos
 
         norm = np.inf
-        closest_gate = None
+        self.goal_gate = None
 
         for gate in self.environment.agents["gates"]:
             direction_vec_test = np.subtract(gate.pos, self.pos)
@@ -118,12 +119,11 @@ class Human(Agent):
             # If it is the closest gate, save its normalised version
             if vec_norm < norm: # dan vec_norm altijd norm bij 1 gate
                 norm = vec_norm
-                closest_gate = gate
+                self.goal_gate = gate
 
-        self.goal_gate_pos = closest_gate.pos
         self.orig_distance = vec_norm
 
-        if self.goal_gate_pos == None:
+        if self.goal_gate == None:
             print("ERROR NO CLOSEST GATE", self)
 
     def timestep(self):
@@ -136,10 +136,14 @@ class Human(Agent):
         norm = np.inf
 
         # Gates "attraction force"
-        
+
         # Get the direction vector between agent and gate
-        direction_vec_test = np.subtract(self.goal_gate_pos, self.pos)
+        direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
+        #TODO linalg
         norm = np.linalg.norm(direction_vec_test)
+        if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
+            # Select the gate which has type exit and assign to closest gate
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
         direction_vec = direction_vec_test / norm
 
         # Add force to the total force
@@ -167,26 +171,29 @@ class Human(Agent):
             # Friction forces
             if vec_norm < TOUCH_DISTANCE:
                 friction = friction*max(-TOUCH_DISTANCE + COMPLETE_STOP + vec_norm, 0.1) / R
-                
-        
-        # Wall Forces
-        for wall in HWALLS:
-            
-            # Check if just underneath or above a wall
-            if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2] + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
-                # Determine distance
-                dist = wall[2] - self.pos[1] 
-                
-                F -= WALL_REPULS_FORCE/(dist) * np.array([0,1])
 
 
-        for wall in VWALLS:
-            # Check if just underneath or above a wall
-            if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2] + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
-                # Determine distance
-                dist = wall[2] - self.pos[0] 
-                
-                F -= WALL_REPULS_FORCE/(dist) * np.array([1,0])
+        if self.pos[1] < 5*R or self.pos[1] > self.environment.max_y - (5*R) or self.pos[0] < 10 + 5*R or self.pos[0] < self.environment.max_x - 5*R:
+            # Wall Forces
+            for wall in HWALLS:
+
+                # Check if just underneath or above a wall
+                if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2]
+                    + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
+                    # Determine distance
+                    dist = wall[2] - self.pos[1]
+
+                    F -= WALL_REPULS_FORCE/(dist) * np.array([0,1])
+
+
+            for wall in VWALLS:
+                # Check if just underneath or above a wall
+                if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2]
+                    + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
+                    # Determine distance
+                    dist = wall[2] - self.pos[0]
+
+                    F -= WALL_REPULS_FORCE/(dist) * np.array([1,0])
 
 
 

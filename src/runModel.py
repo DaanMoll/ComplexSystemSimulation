@@ -4,7 +4,7 @@ import numpy as np
 
 if __name__ == '__main__':
     print("Simulation started...")
-    
+
     # density is based on R
     R = 1
     size_agent = np.pi * R**2
@@ -16,7 +16,7 @@ if __name__ == '__main__':
     num_agents = int(round(((max_x*max_y)/size_agent) * density))
     print(num_agents)
 
-    num_agents=50
+    num_agents=30
     env = Environment(num_agents=num_agents, num_gates=1, max_x=max_x, max_y=max_y)
     print(str(env))
     aniclass = AnimatedScatter(env)

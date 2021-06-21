@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 import numba as nb
-
-from agent import Gate, Human
+from agent import *
+from utils import *
 
 class Environment():
     def __init__(self, num_agents, num_gates, max_x, max_y):
@@ -48,14 +48,18 @@ class Environment():
             self.agents["humans"].append(new_agent)
 
     def init_gates(self):
-        gate = Gate(self)
-        gate.pos = (3, self.max_y/2)
-        self.agents["gates"].append(gate)
+        # Init exit of "alley"
+        exit = Gate(self)
+        exit.pos = (-10, self.max_y/2)
+        exit.type = GATE_TYPES.exit
+        self.agents["gates"].append(exit)
 
-        if self.num_gates == 2:
-            gate = Gate(self)
-            gate.pos = (self.max_x, self.max_y/2)
-            self.agents["gates"].append(gate)
+        # Init entrance of "alley"
+        entrance = Gate(self)
+        entrance.pos = (10, self.max_y/2)
+        entrance.type = GATE_TYPES.entrance
+        self.agents["gates"].append(entrance)
+
 
     def delete_agent(self, agent):
         # TODO implement with orig_distance and time passed how long agent took
