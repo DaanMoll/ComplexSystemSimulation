@@ -3,7 +3,7 @@ from matplotlib import animation, rc
 import numpy as np
 from Utils import HWALLS, VWALLS
 from Logger import Logger
-from constant import LOGGING_PATH
+from constant import LOGGING_PATH, NaN
 import os
 
 # Based on https://stackoverflow.com/questions/9401658/how-to-animate-a-scatter-plot
@@ -26,7 +26,8 @@ class Simulation(object):
                                           init_func=self.setup_plot, blit=True, save_count=20)
         # put save count on 2k if we want to save
         if animate:
-            self.ani.save("../../test2.mp4")
+            plt.show()
+        self.ani.save("../../test2.mp4")
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
@@ -53,7 +54,12 @@ class Simulation(object):
         while True:
             self.env.timestep(True)
             if self.logger != None:
-                self.logger.save_position_step(self.env.poslist)
+                orig_distances = []
+                for agent in self.env.agents["humans"]:
+                    orig_distances.append(agent.orig_distance)
+                for _ in self.env.agents["gates"]:
+                    orig_distances.append(NaN)
+                self.logger.save_position_step(self.env.poslist, orig_distances)
             yield self.env.poslist
 
     def update(self, i):

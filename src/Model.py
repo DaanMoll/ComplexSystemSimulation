@@ -5,7 +5,7 @@ import numba as nb
 from Agent import *
 from Utils import *
 from tqdm import tqdm
-
+from constant import *
 
 class Environment():
     def __init__(self, num_agents, max_x, max_y):
@@ -31,11 +31,10 @@ class Environment():
 
         for agent_type in self.agents.keys():
             for agent in self.agents[agent_type]:
-                agent.update_position(self.agents)
-                if return_positions:
-                    self.poslist.append(agent.pos)
+                if not agent.agent_left:
+                    agent.update_position(self.agents)
+                self.poslist.append(agent.pos)
         if return_positions:
-            # print(self.poslist)
             return self.poslist
 
     def random_position(self):
@@ -71,7 +70,9 @@ class Environment():
         # TODO implement with orig_distance and time passed how long agent took
         # and other things we want to know
         print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
-        self.agents["humans"].remove(agent)
+        # self.agents["humans"].remove(agent)
+        agent.agent_left = True
+        agent.pos = (NaN, NaN)
         self.num_agents -= 1
 
     def __str__(self):

@@ -28,6 +28,7 @@ class Agent(object):
     def __init__(self, environment):
         self.pos = (0,0)
         self.environment = environment
+        self.agent_left = False
 
     def update_position(self, agents):
         pass
