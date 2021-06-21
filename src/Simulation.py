@@ -41,7 +41,7 @@ class Simulation(object):
                     for _ in self.env.agents["gates"]:
                         orig_distances.append(NaN)
                     self.logger.save_position_step(self.env.poslist, orig_distances)
-                    
+
                 if self.env.timesteps % 1000 == 0:
                     print(self.env.timesteps, self.env.num_agents)
 
@@ -53,7 +53,7 @@ class Simulation(object):
                 transform=self.ax.transAxes, ha="center", fontsize="large")
 
         # Define
-        self.scat = self.ax.scatter(x[:-1], y[:-1], s = 500)
+        self.scat = self.ax.scatter(x[:-1], y[:-1], s = 100)
         self.ax.axis([0, 101, -1, 101])
         self.ax.axis("off")
 

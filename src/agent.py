@@ -5,11 +5,9 @@ from Utils import *
 from constant import *
 
 class Gate(Agent):
-    def __init__(self, environment, interval=1):
+    def __init__(self, environment):
         super().__init__(environment)
         self.human_attr_force = 1.05
-        self.timesteps_passed = 0
-        self.interval = interval
         self.type = None
 
     def timestep(self):
@@ -28,16 +26,11 @@ class Gate(Agent):
         for agent in agents["humans"]:
             if agent.pos[0] < 0.1 and not agent.agent_left:
                 self.environment.delete_agent(agent)
-            distance = dist(self.pos, agent.pos)
-
-        self.timesteps_passed += 1
-
 
 class Human(Agent):
     def __init__(self, environment, pos):
         super().__init__(environment)
         self.pos = pos
-
         norm = np.inf
         self.goal_gate = None
 

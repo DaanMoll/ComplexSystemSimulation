@@ -36,12 +36,11 @@ if __name__ == '__main__':
 
     for density in densities:
         num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
-        num_agents = 38
         print(f"Running simulation with density {density} meaning {num_agents} agents.")
 
         env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
         print(str(env))
-        name = "args.run_name" + f"{density=}"
+        name = f"{density=:.2f}"
         aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)

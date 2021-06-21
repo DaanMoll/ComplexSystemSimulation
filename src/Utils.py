@@ -6,13 +6,13 @@ import numba as nb
 #xmin, xmax, y
 HWALLS = np.array([[10, 100, 100],
                      [10, 100, 0.00],
-                     [0, 10, 47.5],
-                     [0, 10, 52.5]])
+                     [0, 10, 46.6],
+                     [0, 10, 53.3]])
 
 #ymin, ymax, x
 VWALLS = np.array([[0, 100, 100],
-                     [0, 48, 10],
-                     [52, 100, 10]])
+                     [0, 47, 10],
+                     [53, 100, 10]])
 
 @nb.njit(fastmath=True)
 def dist(pos1, pos2):
