@@ -13,6 +13,7 @@ class AnimatedScatter(object):
         self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
                                           init_func=self.setup_plot, blit=True, save_count=20)
         # put save count on 2k if we want to save
+        plt.show()
         self.ani.save("data/test.mp4")
 
     def setup_plot(self):
