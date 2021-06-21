@@ -8,7 +8,7 @@ from tqdm import tqdm
 from constant import *
 
 class Environment():
-    def __init__(self, num_agents, max_x, min_x, max_y, min_y):
+    def __init__(self, num_agents, max_x, min_x, max_y, min_y, CLOSE_DISTANCE):
         self.agents = {"humans": [], "gates": []}
         self.max_x = max_x
         self.min_x = min_x
@@ -16,6 +16,7 @@ class Environment():
         self.min_y = min_y
         self.num_agents = num_agents
         self.poslist = []
+        self.CLOSE_DISTANCE = CLOSE_DISTANCE
 
         self.timesteps = 0
 
@@ -48,9 +49,9 @@ class Environment():
         print("Initializing agents...")
         current_positions = []
         for i in tqdm(range(self.num_agents)):
-            new_agent = Human(self, self.random_position())
+            new_agent = Human(self, self.random_position(), self.CLOSE_DISTANCE)
             while any(dist(new_agent.pos, pos) < 2*R for pos in current_positions):
-                new_agent = Human(self, self.random_position())
+                new_agent = Human(self, self.random_position(), self.CLOSE_DISTANCE)
             current_positions.append(new_agent.pos)
             self.agents["humans"].append(new_agent)
 
@@ -72,7 +73,7 @@ class Environment():
         # TODO implement with orig_distance and time passed how long agent took
         # and other things we want to know
         print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
-        
+
         # self.agents["humans"].remove(agent)
         agent.agent_left = True
         agent.pos = (NaN, NaN)

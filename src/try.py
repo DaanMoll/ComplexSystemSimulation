@@ -30,19 +30,19 @@ if __name__ == '__main__':
     # Optional CLI argument for num_agents
 
     # num_agents=30
-    
-    densities = np.linspace(0.01, 0.5)
-    print(densities)
 
-    for density in densities:
-        density = round(density, 2)
-        print(density)
-        num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
-        print(f"Running simulation with density {density} meaning {num_agents} agents.")
-        env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
-        print(str(env))
-        name = f"{density=:.2f}"
-        aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
+    CLOSE_DISTANCES = np.linspace(0.01, 0.5)
+    print(CLOSE_DISTANCES)
+    density = 0.1
+    density = round(density, 2)
+    num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
+
+    for CLOSE_DISTANCE in CLOSE_DISTANCES:
+        for i in range(10):
+            print(f"CLOSE_DISTANCE = {CLOSE_DISTANCE} run no. {i}")
+            env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y, CLOSE_DISTANCE=CLOSE_DISTANCE)
+            name = f"CLOSE_DISTANCE_{CLOSE_DISTANCE}_{i}"
+            aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 

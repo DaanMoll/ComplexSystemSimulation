@@ -34,10 +34,10 @@ class Gate(Agent):
 
 
 class Human(Agent):
-    def __init__(self, environment, pos):
+    def __init__(self, environment, pos, CLOSE_DISTANCE):
         super().__init__(environment)
         self.pos = pos
-
+        self.CLOSE_DISTANCE = CLOSE_DISTANCE
         norm = np.inf
         self.goal_gate = None
 
@@ -85,10 +85,10 @@ class Human(Agent):
             vec_norm = dist(self.pos, human.pos)
 
             # Repulsive Force
-            if vec_norm < CLOSE_DISTANCE:
+            if vec_norm < self.CLOSE_DISTANCE:
 
                 # Determine strength of repulsion
-                factor = CLOSE_DISTANCE / (vec_norm + 1)
+                factor = self.CLOSE_DISTANCE / (vec_norm + 1)
                 norm_direction_vec = direction_vec / vec_norm
                 F += HUMAN_REPULS_FORCE * norm_direction_vec * factor
 
@@ -103,7 +103,7 @@ class Human(Agent):
 
                 # Check if just underneath or above a wall
                 if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2]
-                    + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
+                    + self.CLOSE_DISTANCE  and self.pos[1] > wall[2] - self.CLOSE_DISTANCE):
                     # Determine distance
                     distance = wall[2] - self.pos[1]
 
@@ -113,7 +113,7 @@ class Human(Agent):
             for wall in VWALLS:
                 # Check if just underneath or above a wall
                 if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2]
-                    + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
+                    + self.CLOSE_DISTANCE and self.pos[0] > wall[2] - self.CLOSE_DISTANCE):
                     # Determine distance
                     distance = wall[2] - self.pos[0]
 
