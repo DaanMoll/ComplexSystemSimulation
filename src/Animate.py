@@ -14,7 +14,7 @@ class AnimatedScatter(object):
                                           init_func=self.setup_plot, blit=True, save_count=20)
         # put save count on 2k if we want to save
         plt.show()
-        self.ani.save("data/test.mp4")
+        self.ani.save("LOGGING_PATH/test.mp4")
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]

@@ -24,12 +24,11 @@ class Gate(Agent):
         if self.type == GATE_TYPES.entrance:
             return
 
-        if self.timesteps_passed >= self.interval:
-            # get closest agent and remove it from system
-            for agent in agents["humans"]:
-                if agent.pos[0] < 0.1:
-                    self.environment.delete_agent(agent)
-                distance = dist(self.pos, agent.pos)
+        # get closest agent and remove it from system
+        for agent in agents["humans"]:
+            if agent.pos[0] < 0.1 and not agent.agent_left:
+                self.environment.delete_agent(agent)
+            distance = dist(self.pos, agent.pos)
 
         self.timesteps_passed += 1
 
@@ -79,7 +78,7 @@ class Human(Agent):
         # Human Forces
         for human in agents["humans"]:
             # Skip myself
-            if human == self:
+            if human == self or human.agent_left:
                 continue
             # Get all directions and vector norms
             direction_vec = np.subtract(self.pos, human.pos)
@@ -95,7 +94,7 @@ class Human(Agent):
 
             # Friction forces
             if vec_norm < TOUCH_DISTANCE:
-                friction = friction * max(-TOUCH_DISTANCE + COMPLETE_STOP + vec_norm, 0.1) / R
+                friction = friction * max(-TOUCH_DISTANCE + COMPLETE_STOP + vec_norm, MAX_FRICTION) / R
 
         if self.pos[1] < 5*R or self.pos[1] > self.environment.max_y - (5*R) \
             or self.pos[0] < 10 + 5*R or self.pos[0] < self.environment.max_x - 5*R:
