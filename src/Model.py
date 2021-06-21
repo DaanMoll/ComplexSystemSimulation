@@ -2,16 +2,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import animation, rc
 import numba as nb
-from agent import *
-from utils import *
+from Agent import *
+from Utils import *
+from tqdm import tqdm
+
 
 class Environment():
-    def __init__(self, num_agents, num_gates, max_x, max_y):
+    def __init__(self, num_agents, max_x, max_y):
         self.agents = {"humans": [], "gates": []}
         self.max_x = max_x
         self.max_y = max_y
         self.num_agents = num_agents
-        self.num_gates = num_gates
         self.poslist = []
 
         self.timesteps = 0
@@ -21,9 +22,9 @@ class Environment():
 
         for agent_type in self.agents.keys():
             for agent in self.agents[agent_type]:
-                self.poslist.append(agent.get_pos())
+                self.poslist.append(agent.pos)
 
-    def timestep(self, return_positions):
+    def timestep(self, return_positions=False):
         self.timesteps += 1
         # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
         self.poslist = []
@@ -32,7 +33,7 @@ class Environment():
             for agent in self.agents[agent_type]:
                 agent.update_position(self.agents)
                 if return_positions:
-                    self.poslist.append(agent.get_pos())
+                    self.poslist.append(agent.pos)
         if return_positions:
             # print(self.poslist)
             return self.poslist
@@ -43,8 +44,13 @@ class Environment():
         return (x, y)
 
     def init_humans(self):
-        for i in range(self.num_agents):
+        print("Initializing agents...")
+        current_positions = []
+        for i in tqdm(range(self.num_agents)):
             new_agent = Human(self, self.random_position())
+            while any(dist(new_agent.pos, pos) < 2*R for pos in current_positions):
+                new_agent = Human(self, self.random_position())
+            current_positions.append(new_agent.pos)
             self.agents["humans"].append(new_agent)
 
     def init_gates(self):
@@ -70,9 +76,8 @@ class Environment():
 
     def __str__(self):
         return f"{self.__class__.__name__}: \n\tnum_agents: {self.num_agents} \
-                                            \n\tx_max: {self.max_y} \
-                                            \n\ty_max: {self.max_x} \
-                                            \n\tnum_gates: {len(self.agents['gates'])}"
+                                            \n\tx_max: {self.max_x} \
+                                            \n\ty_max: {self.max_y}"
         __repr__ = __str__
 
 
