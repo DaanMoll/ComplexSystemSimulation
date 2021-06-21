@@ -6,8 +6,8 @@ import numba as nb
 #xmin, xmax, y
 HWALLS = np.array([[10, 100, 100],
                      [10, 100, 0.00],
-                     [0, 10, 46.6],
-                     [0, 10, 53.3]])
+                     [0, 10, 46.5],
+                     [0, 10, 53.5]])
 
 #ymin, ymax, x
 VWALLS = np.array([[0, 100, 100],
