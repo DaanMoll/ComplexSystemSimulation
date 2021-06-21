@@ -72,6 +72,7 @@ class Environment():
         # TODO implement with orig_distance and time passed how long agent took
         # and other things we want to know
         print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
+        
         # self.agents["humans"].remove(agent)
         agent.agent_left = True
         agent.pos = (NaN, NaN)

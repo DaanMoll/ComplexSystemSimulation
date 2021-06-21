@@ -17,17 +17,33 @@ class Simulation(object):
             print(f"Logging enabled for file: {self.logger.filename}")
 
         self.env = env
-        self.stream = self.data_stream()
 
-        # Setup the figure and axes...
-        self.fig, self.ax = plt.subplots(figsize=(32, 32))
-        # Then setup FuncAnimation.
-        self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                          init_func=self.setup_plot, blit=True, save_count=20)
-        # put save count on 2k if we want to save
         if animate:
+            self.stream = self.data_stream()
+
+            # Setup the figure and axes...
+            self.fig, self.ax = plt.subplots(figsize=(32, 32))
+            # Then setup FuncAnimation.
+            self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
+                                            init_func=self.setup_plot, blit=True, save_count=20)
+            # put save count on 2k if we want to save
             plt.show()
-        self.ani.save("LOGGING_PATH/animation/animation.mp4")
+            if not os.path.exists(LOGGING_PATH/animation):
+                os.mkdir(LOGGING_PATH/animation)
+            self.ani.save("LOGGING_PATH/animation/animation.mp4")
+        else:
+            while self.env.num_agents > 0 and self.env.timesteps < 10000:
+                self.env.timestep()
+                if self.logger != None:
+                    orig_distances = []
+                    for agent in self.env.agents["humans"]:
+                        orig_distances.append(agent.orig_distance)
+                    for _ in self.env.agents["gates"]:
+                        orig_distances.append(NaN)
+                    self.logger.save_position_step(self.env.poslist, orig_distances)
+                    
+                if self.env.timesteps % 1000 == 0:
+                    print(self.env.timesteps, self.env.num_agents)
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
