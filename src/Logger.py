@@ -18,20 +18,20 @@ class Logger():
         self.columns = []
         self.time = 0
 
-    def save_position_step(self, positions):
+    def save_position_step(self, positions, orig_distances):
         if not self.has_header:
             self.columns.append("timestep")
             print(f"saving {self.output_path}")
-            self.columns.extend([f"agent_{i}_{xy}" for i in range(len(positions) - 2) for xy in ("x", "y") ])
-            self.columns.extend([f"gate{i}_{xy}" for i in range(2) for xy in ("x", "y") ])
+            self.columns.extend([f"agent_{i}_{xy}" for i in range(len(positions) - 2) for xy in ("x", "y", "orig_distance") ])
+            self.columns.extend([f"gate{i}_{xy}" for i in range(2) for xy in ("x", "y", "orig_distance") ])
             with open(self.output_path, 'w+', newline ='') as file:
                 write = csv.writer(file)
                 write.writerows([self.columns])
             self.has_header = True
 
         row = [self.time]
-        for (x,y) in positions:
-            row.extend([x,y])
+        for i in range(len(positions)):
+            row.extend([positions[i][0],positions[i][1], orig_distances[i]])
 
         self.time += 1
         # writing the data into the file
