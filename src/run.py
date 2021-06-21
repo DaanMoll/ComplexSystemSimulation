@@ -3,16 +3,18 @@ from Simulation import Simulation
 import numpy as np
 import sys
 import argparse
+from constant import R
 
 
 if __name__ == '__main__':
     # density is based on R
-    R = 1
     size_agent = np.pi * R**2
     density = 0.1
 
-    max_x=90
+    max_x=100
+    min_x=10
     max_y=100
+    min_y=0
     animate = True
 
     parser = argparse.ArgumentParser()
@@ -31,11 +33,11 @@ if __name__ == '__main__':
     if args.num_agents:
         num_agents = args.num_agents
     else:
-        num_agents = int(round(((max_x*max_y)/size_agent) * density))
+        num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
         print(f"Running simulation with density {density} meaning {num_agents} agents.")
 
     # num_agents=30
-    env = Environment(num_agents=num_agents, max_x=max_x, max_y=max_y)
+    env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
     print(str(env))
     aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 

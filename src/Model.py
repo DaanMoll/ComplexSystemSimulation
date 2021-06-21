@@ -8,10 +8,12 @@ from tqdm import tqdm
 from constant import *
 
 class Environment():
-    def __init__(self, num_agents, max_x, max_y):
+    def __init__(self, num_agents, max_x, min_x, max_y, min_y):
         self.agents = {"humans": [], "gates": []}
         self.max_x = max_x
+        self.min_x = min_x
         self.max_y = max_y
+        self.min_y = min_y
         self.num_agents = num_agents
         self.poslist = []
 
@@ -38,8 +40,8 @@ class Environment():
             return self.poslist
 
     def random_position(self):
-        x = np.random.uniform(low=11, high=99)
-        y = np.random.uniform(low=1, high=99)
+        x = np.random.uniform(low=self.min_x+1, high=self.max_x-1)
+        y = np.random.uniform(low=self.min_y+1, high=self.max_y-1)
         return (x, y)
 
     def init_humans(self):
@@ -61,7 +63,7 @@ class Environment():
 
         # Init entrance of "alley"
         entrance = Gate(self)
-        entrance.pos = (10, self.max_y/2)
+        entrance.pos = (self.min_x, self.max_y/2)
         entrance.type = GATE_TYPES.entrance
         self.agents["gates"].append(entrance)
 

@@ -27,7 +27,7 @@ class Simulation(object):
         # put save count on 2k if we want to save
         if animate:
             plt.show()
-        self.ani.save("../../test2.mp4")
+        self.ani.save("LOGGING_PATH/animation/animation.mp4")
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
