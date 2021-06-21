@@ -35,9 +35,10 @@ if __name__ == '__main__':
     print(densities)
 
     for density in densities:
+        density = round(density, 2)
+        print(density)
         num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
         print(f"Running simulation with density {density} meaning {num_agents} agents.")
-
         env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
         print(str(env))
         name = f"{density=:.2f}"

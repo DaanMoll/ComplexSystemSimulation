@@ -58,11 +58,18 @@ class Human(Agent):
 
         # Gates "attraction force"
             # Get the direction vector between agent and gate
+        # direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
+        # norm = dist(self.goal_gate.pos, self.pos)
+        # if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
+        #     # Select the gate which has type exit and assign to closest gate
+        
+        if self.pos[1] > 47.1 and self.pos[1] < 52.9:
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
+        else:
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.entrance), None)
+        
         direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
         norm = dist(self.goal_gate.pos, self.pos)
-        if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
-            # Select the gate which has type exit and assign to closest gate
-            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
         direction_vec = direction_vec_test / norm
 
         # Add force to the total force
