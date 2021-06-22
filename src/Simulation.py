@@ -11,8 +11,7 @@ class Simulation(object):
     def __init__(self, env, logging=False, name=None, animate=True):
         self.logger = None
         if logging:
-            if not os.path.exists(LOGGING_PATH):
-                os.mkdir(LOGGING_PATH)
+            os.makedirs(LOGGING_PATH, exist_ok=True)
             self.logger = Logger(LOGGING_PATH, filename=name)
             print(f"Logging enabled for file: {self.logger.filename}")
 
@@ -25,12 +24,13 @@ class Simulation(object):
             self.fig, self.ax = plt.subplots(figsize=(32, 32))
             # Then setup FuncAnimation.
             self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                            init_func=self.setup_plot, blit=True, save_count=20)
+                                            init_func=self.setup_plot, blit=True, save_count=200)
             # put save count on 2k if we want to save
-            plt.show()
-            if not os.path.exists(LOGGING_PATH/animation):
-                os.mkdir(LOGGING_PATH/animation)
-            self.ani.save("LOGGING_PATH/animation/animation.mp4")
+            # plt.show()
+
+            animation_path = LOGGING_PATH + "/animation"
+            os.makedirs(animation_path, exist_ok=True)
+            self.ani.save(f"{LOGGING_PATH}/animation/animation.mp4")
         else:
             while self.env.num_agents > 0 and self.env.timesteps < 10000:
                 self.env.timestep()
@@ -50,10 +50,10 @@ class Simulation(object):
         y = [x[1] for x in self.env.poslist]
 
         self.title = self.ax.text(0.02, 0.95, "", bbox={'facecolor':'w', 'alpha':0.5, 'pad':5},
-                transform=self.ax.transAxes, ha="center", fontsize="large")
+                transform=self.ax.transAxes, ha="center", fontsize=30, fontstretch='expanded')
 
         # Define
-        self.scat = self.ax.scatter(x[:-1], y[:-1], s = 100)
+        self.scat = self.ax.scatter(x[:-1], y[:-1], s = 500)
         self.ax.axis([0, 101, -1, 101])
         self.ax.axis("off")
 
