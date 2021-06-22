@@ -39,7 +39,6 @@ if __name__ == '__main__':
             env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y, attr_force = attr_force)
             name = f"HUMAN_ATTR_FORCE_{attr_force}_density0.1"
             aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
-            exit()
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 
