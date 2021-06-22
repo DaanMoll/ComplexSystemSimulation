@@ -22,7 +22,7 @@ class Environment():
         self.init_gates()
         self.init_humans()
 
-        for agent_type in self.agents.keys():
+        for agent_type in reversed(self.agents.keys()):
             for agent in self.agents[agent_type]:
                 self.poslist.append(agent.pos)
 
@@ -31,7 +31,7 @@ class Environment():
         # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
         self.poslist = []
 
-        for agent_type in self.agents.keys():
+        for agent_type in reversed(self.agents.keys()):
             for agent in self.agents[agent_type]:
                 if not agent.agent_left:
                     agent.update_position(self.agents)

@@ -44,6 +44,7 @@ if __name__ == '__main__':
             print(str(env))
             name = f"{density=:.2f}.{i=}"
             aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
+            exit()
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 

@@ -123,6 +123,7 @@ class Human(Agent):
         return F
 
     def update_position(self, agents):
-        force = self.forces(agents)
-        pos_change = tuple(force * DT)
-        self.pos = tuple(np.add(self.pos, pos_change))
+        if not self.agent_left:
+            force = self.forces(agents)
+            pos_change = tuple(force * DT)
+            self.pos = tuple(np.add(self.pos, pos_change))
