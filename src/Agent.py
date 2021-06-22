@@ -5,11 +5,9 @@ from Utils import *
 from constant import *
 
 class Gate(Agent):
-    def __init__(self, environment, interval=1):
+    def __init__(self, environment):
         super().__init__(environment)
         self.human_attr_force = 1.05
-        self.timesteps_passed = 0
-        self.interval = interval
         self.type = None
 
     def timestep(self):
@@ -28,16 +26,11 @@ class Gate(Agent):
         for agent in agents["humans"]:
             if agent.pos[0] < 0.1 and not agent.agent_left:
                 self.environment.delete_agent(agent)
-            distance = dist(self.pos, agent.pos)
-
-        self.timesteps_passed += 1
-
 
 class Human(Agent):
-    def __init__(self, environment, pos, CLOSE_DISTANCE):
+    def __init__(self, environment, pos):
         super().__init__(environment)
         self.pos = pos
-        self.CLOSE_DISTANCE = CLOSE_DISTANCE
         norm = np.inf
         self.goal_gate = None
 
@@ -65,11 +58,18 @@ class Human(Agent):
 
         # Gates "attraction force"
             # Get the direction vector between agent and gate
+        # direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
+        # norm = dist(self.goal_gate.pos, self.pos)
+        # if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
+        #     # Select the gate which has type exit and assign to closest gate
+
+        if self.pos[1] > VWALLS[1][1]+0.1 and self.pos[1] < VWALLS[2][0]-0.1:
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
+        else:
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.entrance), None)
+
         direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
         norm = dist(self.goal_gate.pos, self.pos)
-        if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
-            # Select the gate which has type exit and assign to closest gate
-            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
         direction_vec = direction_vec_test / norm
 
         # Add force to the total force
@@ -85,10 +85,10 @@ class Human(Agent):
             vec_norm = dist(self.pos, human.pos)
 
             # Repulsive Force
-            if vec_norm < self.CLOSE_DISTANCE:
+            if vec_norm < CLOSE_DISTANCE:
 
                 # Determine strength of repulsion
-                factor = self.CLOSE_DISTANCE / (vec_norm + 1)
+                factor = CLOSE_DISTANCE / (vec_norm + 1)
                 norm_direction_vec = direction_vec / vec_norm
                 F += HUMAN_REPULS_FORCE * norm_direction_vec * factor
 
@@ -103,7 +103,7 @@ class Human(Agent):
 
                 # Check if just underneath or above a wall
                 if self.pos[0] > wall[0] and self.pos[0] < wall[1] and (self.pos[1] < wall[2]
-                    + self.CLOSE_DISTANCE  and self.pos[1] > wall[2] - self.CLOSE_DISTANCE):
+                    + CLOSE_DISTANCE  and self.pos[1] > wall[2] - CLOSE_DISTANCE):
                     # Determine distance
                     distance = wall[2] - self.pos[1]
 
@@ -113,7 +113,7 @@ class Human(Agent):
             for wall in VWALLS:
                 # Check if just underneath or above a wall
                 if self.pos[1] > wall[0] and self.pos[1] < wall[1] and (self.pos[0] < wall[2]
-                    + self.CLOSE_DISTANCE and self.pos[0] > wall[2] - self.CLOSE_DISTANCE):
+                    + CLOSE_DISTANCE and self.pos[0] > wall[2] - CLOSE_DISTANCE):
                     # Determine distance
                     distance = wall[2] - self.pos[0]
 
@@ -123,6 +123,7 @@ class Human(Agent):
         return F
 
     def update_position(self, agents):
-        force = self.forces(agents)
-        pos_change = tuple(force * DT)
-        self.pos = tuple(np.add(self.pos, pos_change))
+        if not self.agent_left:
+            force = self.forces(agents)
+            pos_change = tuple(force * DT)
+            self.pos = tuple(np.add(self.pos, pos_change))
