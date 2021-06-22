@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # Optional CLI argument for num_agents
 
     # num_agents=30
-    
+
     densities = np.linspace(0.01, 0.2, 20)
     print(densities)
 
@@ -44,7 +44,6 @@ if __name__ == '__main__':
             print(str(env))
             name = f"{density=:.2f}.{i=}"
             aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
-            exit()
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 
