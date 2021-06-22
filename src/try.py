@@ -31,7 +31,7 @@ if __name__ == '__main__':
 
     # num_agents=30
 
-    CLOSE_DISTANCES = np.linspace(0.01, 0.5)
+    CLOSE_DISTANCES = np.linspace(int(2*R), int(10*R), 40)
     print(CLOSE_DISTANCES)
     density = 0.1
     density = round(density, 2)
@@ -39,9 +39,9 @@ if __name__ == '__main__':
 
     for CLOSE_DISTANCE in CLOSE_DISTANCES:
         for i in range(10):
-            print(f"CLOSE_DISTANCE = {CLOSE_DISTANCE} run no. {i}")
+            print(f"CLOSE_DISTANCE2 = {CLOSE_DISTANCE:4f} run no. {i}")
             env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y, CLOSE_DISTANCE=CLOSE_DISTANCE)
-            name = f"CLOSE_DISTANCE_{CLOSE_DISTANCE}_{i}"
+            name = f"CLOSE_DISTANCE2_{CLOSE_DISTANCE:4f}_{i}"
             aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
