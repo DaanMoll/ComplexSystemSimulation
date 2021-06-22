@@ -35,9 +35,9 @@ if __name__ == '__main__':
 
     for attr_force in attr_forces:
         attr_force = round(attr_force, 2)
-        for i in range(1):
+        for i in range(10):
             env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y, attr_force = attr_force)
-            name = f"HUMAN_ATTR_FORCE_{attr_force}_density0.1"
+            name = f"HUMAN_ATTR_FORCE_{attr_force}_{i}_density0.1"
             aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
