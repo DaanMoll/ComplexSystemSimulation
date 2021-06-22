@@ -5,11 +5,9 @@ from Utils import *
 from constant import *
 
 class Gate(Agent):
-    def __init__(self, environment, interval=1):
+    def __init__(self, environment):
         super().__init__(environment)
         self.human_attr_force = 1.05
-        self.timesteps_passed = 0
-        self.interval = interval
         self.type = None
 
     def timestep(self):
@@ -28,16 +26,11 @@ class Gate(Agent):
         for agent in agents["humans"]:
             if agent.pos[0] < 0.1 and not agent.agent_left:
                 self.environment.delete_agent(agent)
-            distance = dist(self.pos, agent.pos)
-
-        self.timesteps_passed += 1
-
 
 class Human(Agent):
     def __init__(self, environment, pos):
         super().__init__(environment)
         self.pos = pos
-
         norm = np.inf
         self.goal_gate = None
 
@@ -65,11 +58,18 @@ class Human(Agent):
 
         # Gates "attraction force"
             # Get the direction vector between agent and gate
+        # direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
+        # norm = dist(self.goal_gate.pos, self.pos)
+        # if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
+        #     # Select the gate which has type exit and assign to closest gate
+
+        if self.pos[1] > VWALLS[1][1]+0.1 and self.pos[1] < VWALLS[2][0]-0.1:
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
+        else:
+            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.entrance), None)
+
         direction_vec_test = np.subtract(self.goal_gate.pos, self.pos)
         norm = dist(self.goal_gate.pos, self.pos)
-        if norm < GATE_SWITCH_THRESHOLD and self.goal_gate.type == GATE_TYPES.entrance:
-            # Select the gate which has type exit and assign to closest gate
-            self.goal_gate = next((gate for gate in self.environment.agents["gates"] if gate.type == GATE_TYPES.exit), None)
         direction_vec = direction_vec_test / norm
 
         # Add force to the total force
@@ -123,6 +123,7 @@ class Human(Agent):
         return F
 
     def update_position(self, agents):
-        force = self.forces(agents)
-        pos_change = tuple(force * DT)
-        self.pos = tuple(np.add(self.pos, pos_change))
+        if not self.agent_left:
+            force = self.forces(agents)
+            pos_change = tuple(force * DT)
+            self.pos = tuple(np.add(self.pos, pos_change))

@@ -8,7 +8,7 @@ from tqdm import tqdm
 from constant import *
 
 class Environment():
-    def __init__(self, num_agents, max_x, min_x, max_y, min_y):
+    def __init__(self, num_agents, max_x, min_x, max_y, min_y, attr_force):
         self.agents = {"humans": [], "gates": []}
         self.max_x = max_x
         self.min_x = min_x
@@ -21,7 +21,10 @@ class Environment():
 
         self.init_gates()
         self.init_humans()
-
+        self.HUMAN_ATTR_FORCE = attr_force
+        print("________________")
+        print(self.HUMAN_ATTR_FORCE)
+        print("________________")
         for agent_type in reversed(self.agents.keys()):
             for agent in self.agents[agent_type]:
                 self.poslist.append(agent.pos)
@@ -72,7 +75,7 @@ class Environment():
         # TODO implement with orig_distance and time passed how long agent took
         # and other things we want to know
         print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
-        
+
         # self.agents["humans"].remove(agent)
         agent.agent_left = True
         agent.pos = (NaN, NaN)

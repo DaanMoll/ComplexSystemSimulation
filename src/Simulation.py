@@ -38,16 +38,16 @@ class Simulation(object):
 
                 if self.logger != None:
                     orig_distances = []
-                    
+
                     for _ in self.env.agents["gates"]:
                         orig_distances.append(NaN)
                     for agent in self.env.agents["humans"]:
                         orig_distances.append(agent.orig_distance)
-                    
+
 
                     self.logger.save_position_step(self.env.poslist, orig_distances)
 
-                    print(self.env.poslist, self.env.num_agents)
+                    # print(self.env.poslist, self.env.num_agents)
 
                 if self.env.timesteps % 1000 == 0:
                     print(self.env.timesteps, self.env.num_agents)

@@ -27,28 +27,25 @@ if __name__ == '__main__':
     \n\t Name: {args.run_name}\
     \n\t Animate: {animate}")
 
-    # Optional CLI argument for num_agents
 
-    # num_agents=30
-    
-    densities = np.linspace(0.01, 0.2, 20)
-    print(densities)
+    density = 0.1
+    attr_forces = np.linspace(10, 20, 24)
+    num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
+    # print(f"Running simulation with density {density} meaning {num_agents} agents.")
 
-    for density in densities:
-        density = round(density, 2)
-        print(density)
-        for i in range(10):
-            num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
-            print(f"Running simulation with density {density} meaning {num_agents} agents.")
-            env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
-            print(str(env))
-            name = f"{density=:.2f}.{i=}"
+    for attr_force in attr_forces:
+        attr_force = round(attr_force, 2)
+        for i in range(1):
+            env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y, attr_force = attr_force)
+            name = f"HUMAN_ATTR_FORCE_{attr_force}_density0.1"
             aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
             exit()
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 
     print("Simulation ended")
+
+
 
 
 
