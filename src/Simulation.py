@@ -78,7 +78,6 @@ class Simulation(object):
         return self.scat,
 
     def data_stream(self):
-        # TODO might be better to just return the positions
         while True:
             self.env.timestep(True)
             if self.logger != None:
