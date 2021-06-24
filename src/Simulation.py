@@ -12,7 +12,7 @@ class Simulation(object):
     Class to run the simulation with timesteps.
     Available for both with and without animation.
     """
-    
+
     def __init__(self, env, logging=False, name=None, animate=True, show_animation=False):
         self.logger = None
         if logging:
@@ -29,7 +29,7 @@ class Simulation(object):
             self.fig, self.ax = plt.subplots(figsize=(32, 32))
             # Then setup FuncAnimation.
             self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                            init_func=self.setup_plot, blit=True, save_count=2000)
+                                            init_func=self.setup_plot, blit=True, save_count=3000)
             # put save count on 2k if we want to save
             if show_animation:
                 plt.show()
