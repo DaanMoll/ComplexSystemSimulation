@@ -2,6 +2,10 @@ from enum import Enum
 import numpy as np
 import numba as nb
 
+"""
+File with utilities for the model
+"""
+
 # Define walls
 #xmin, xmax, y
 HWALLS = np.array([[10, 100, 100],

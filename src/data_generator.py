@@ -5,6 +5,10 @@ import sys
 import argparse
 from constant import R
 
+"""
+This file is used for generating data prior to analysis.
+Changes have been made for the respective constants (constant.py).
+"""
 
 if __name__ == '__main__':
     # density is based on R
@@ -27,27 +31,24 @@ if __name__ == '__main__':
     \n\t Name: {args.run_name}\
     \n\t Animate: {animate}")
 
-    # Optional CLI argument for num_agents
+    densities = np.linspace(0.01, 0.2, 20)
+    print(densities)
 
-    # num_agents=30
-
-    density = 0.1
-    num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
-
-    for i in range(10, 20):
-        print(f"{i} | Running simulation with density {density} meaning {num_agents} agents.")
-        env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
-        print(str(env))
-        name = f"{density=:.2f}.{i=}"
-        aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
+    for density in densities:
+        density = round(density, 2)
+        print(density)
+        for i in range(10):
+            num_agents = int(round((((max_x-min_x)*(max_y-min_y))/size_agent) * density))
+            print(f"Running simulation with density {density} meaning {num_agents} agents.")
+            env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
+            print(str(env))
+            name = f"{density=:.2f}.{i=}"
+            aniclass = Simulation(env, logging=args.logging, name=name, animate = animate)
 
     # aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 
     print("Simulation ended")
 
-
-if __name__ == '__main__':
-    print("Running this file does not do anything.")
 
 
 

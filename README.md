@@ -5,13 +5,13 @@ Usage:
 pip3 install -r requirements
 ```
 
-Run for instance **inside the `src` directory**:
+Run the following **inside the `src` directory** to show the animation directly and save it after:
 ```
-python3 run.py -n 5 -l -r testrun
+python3 run.py -n 100 -r testrun -a -s
 ```
-or
+or run the following for logging (outputting intermediate data)
 ```
-python3 run.py -a
+python3 run.py -n 100 -r testrun2 -l
 ```
 
 or see help for more information:

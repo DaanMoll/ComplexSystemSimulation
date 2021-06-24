@@ -8,6 +8,9 @@ from tqdm import tqdm
 from constant import *
 
 class Environment():
+    """
+    The main environment class.
+    """
     def __init__(self, num_agents, max_x, min_x, max_y, min_y):
         self.agents = {"humans": [], "gates": []}
         self.max_x = max_x
