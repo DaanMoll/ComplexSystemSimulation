@@ -20,11 +20,16 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("-n", "--num_agents", help="Set the number of agents", type=int)
     parser.add_argument("-l", "--logging", help="Enable logging", action="store_true")
-    parser.add_argument("-a", "--no_animation", help="Disable animation (default ON)", action="store_true")
+    parser.add_argument("-a", "--animation", help="Enable storing an animation", action="store_true")
+    parser.add_argument("-s", "--show_animation", help="Show animation during run (this enables --animation)", action="store_true")
     parser.add_argument("-r", "--run_name", help="Enter a name for this run, to save the logging file (optional)", type=str)
     args = parser.parse_args()
-    if args.no_animation:
-        animate = False
+
+    animate = args.animation
+    show_animation = args.show_animation
+    if show_animation:
+        animate = True
+
     print(f"Simulation started... \
     \n\t Name: {args.run_name}\
     \n\t Animate: {animate}")
@@ -39,6 +44,6 @@ if __name__ == '__main__':
     # num_agents=30
     env = Environment(num_agents=num_agents, max_x=max_x, min_x=min_x, max_y=max_y, min_y=min_y)
     print(str(env))
-    aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
+    aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate, show_animation = show_animation)
 
     print("Simulation ended")

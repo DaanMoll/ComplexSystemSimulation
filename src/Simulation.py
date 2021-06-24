@@ -8,7 +8,7 @@ import os
 
 # Based on https://stackoverflow.com/questions/9401658/how-to-animate-a-scatter-plot
 class Simulation(object):
-    def __init__(self, env, logging=False, name=None, animate=True):
+    def __init__(self, env, logging=False, name=None, animate=True, show_animation=False):
         self.logger = None
         if logging:
             os.makedirs(LOGGING_PATH, exist_ok=True)
@@ -24,13 +24,16 @@ class Simulation(object):
             self.fig, self.ax = plt.subplots(figsize=(32, 32))
             # Then setup FuncAnimation.
             self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                            init_func=self.setup_plot, blit=True, save_count=1)
+                                            init_func=self.setup_plot, blit=True, save_count=2000)
             # put save count on 2k if we want to save
-            plt.show()
+            if show_animation:
+                plt.show()
 
             animation_path = LOGGING_PATH + "/animation"
             os.makedirs(animation_path, exist_ok=True)
-            self.ani.save(f"{LOGGING_PATH}/animation/animation_{name}.mp4")
+            save_path = f"{LOGGING_PATH}/animation/animation_{name}.mp4"
+            self.ani.save(save_path)
+            print(f"Animation saved at: {save_path}")
         else:
             while self.env.num_agents > 0 and self.env.timesteps < 10000:
                 self.env.timestep()
