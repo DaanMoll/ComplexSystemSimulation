@@ -16,7 +16,7 @@ optional arguments:
   -h, --help            show this help message and exit
   -n NUM_AGENTS, --num_agents NUM_AGENTS
                         Set the number of agents
-  -l, --logging         Enable logging
+  -l, --logging         Enable logging (storing positions data)
   -a, --animation       Enable storing an animation
   -s, --show_animation  Show animation during run (this enables --animation)
   -r R, -run_name R     Enter a name for this run, to save the logging file
@@ -37,11 +37,11 @@ if __name__ == '__main__':
     animate = True
 
     parser = argparse.ArgumentParser(description = "Crowd simulation model during evacuation.")
+    parser.add_argument("-r", "--run_name", help="[REQUIRED] Enter a name for this run, to save the logging file", type=str, required=True)
     parser.add_argument("-n", "--num_agents", help="Set the number of agents", type=int)
-    parser.add_argument("-l", "--logging", help="Enable logging", action="store_true")
+    parser.add_argument("-l", "--logging", help="Enable logging (storing positions data)", action="store_true")
     parser.add_argument("-a", "--animation", help="Enable storing an animation", action="store_true")
     parser.add_argument("-s", "--show_animation", help="Show animation during run (this enables --animation)", action="store_true")
-    parser.add_argument("-r", "-run_name", help="Enter a name for this run, to save the logging file", type=str)
     args = parser.parse_args()
 
     animate = args.animation
