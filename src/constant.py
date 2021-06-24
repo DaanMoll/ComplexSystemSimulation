@@ -1,3 +1,8 @@
+"""
+File with the used constants for default model.
+These have been sweeped during analysis.
+"""
+
 DIMS = 2
 R = 1.5
 CLOSE_DISTANCE = 5*R

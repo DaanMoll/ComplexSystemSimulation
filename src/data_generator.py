@@ -5,6 +5,10 @@ import sys
 import argparse
 from constant import R
 
+"""
+This file is used for generating data prior to analysis.
+Changes have been made for the respective constants (constant.py).
+"""
 
 if __name__ == '__main__':
     # density is based on R

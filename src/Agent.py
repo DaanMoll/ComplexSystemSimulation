@@ -5,6 +5,10 @@ from Utils import *
 from constant import *
 
 class Gate(Agent):
+    """
+    Gate class inherited from Agent
+    """
+
     def __init__(self, environment):
         super().__init__(environment)
         self.type = None
@@ -30,6 +34,10 @@ class Gate(Agent):
                 self.environment.delete_agent(agent)
 
 class Human(Agent):
+    """
+    Human class inherited from Agent
+    """
+
     def __init__(self, environment, pos):
         super().__init__(environment)
         self.pos = pos
@@ -47,7 +55,7 @@ class Human(Agent):
         self.orig_distance = norm
 
         if self.goal_gate == None:
-            raise Exception(f"ERROR: No closest gante has been found for agent {self}")
+            raise Exception(f"ERROR: No closest gate has been found for agent {self}")
 
     def timestep(self):
         self.update_position()

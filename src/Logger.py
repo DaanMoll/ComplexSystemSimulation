@@ -4,6 +4,11 @@ import os
 import csv
 
 class Logger():
+    """
+    Class to log the positions of agents.
+    Output is a csv file with x,y positions for all agents.
+    """
+    
     def __init__(self, output_dir, debug=False, filename=None):
         if filename != None:
             self.filename = filename

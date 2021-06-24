@@ -8,6 +8,11 @@ import os
 
 # Based on https://stackoverflow.com/questions/9401658/how-to-animate-a-scatter-plot
 class Simulation(object):
+    """
+    Class to run the simulation with timesteps.
+    Available for both with and without animation.
+    """
+    
     def __init__(self, env, logging=False, name=None, animate=True, show_animation=False):
         self.logger = None
         if logging:
