@@ -68,9 +68,7 @@ class Environment():
         self.agents["gates"].append(entrance)
 
 
-    def delete_agent(self, agent):
-        print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
-        
+    def delete_agent(self, agent):        
         # self.agents["humans"].remove(agent)
         agent.agent_left = True
         agent.pos = (NaN, NaN)
