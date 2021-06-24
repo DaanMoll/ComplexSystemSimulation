@@ -19,6 +19,7 @@ class Environment():
 
         self.timesteps = 0
 
+        # Initialize gates and humans
         self.init_gates()
         self.init_humans()
 
@@ -28,7 +29,6 @@ class Environment():
 
     def timestep(self, return_positions=False):
         self.timesteps += 1
-        # print("amount of agents:", len(self.agents["humans"]), self.num_agents)
         self.poslist = []
 
         for agent_type in reversed(self.agents.keys()):
@@ -69,8 +69,6 @@ class Environment():
 
 
     def delete_agent(self, agent):
-        # TODO implement with orig_distance and time passed how long agent took
-        # and other things we want to know
         print("agent left, original distance: ", agent.orig_distance, "| timesteps:", self.timesteps, "| dist/time: ", agent.orig_distance / self.timesteps)
         
         # self.agents["humans"].remove(agent)
@@ -86,4 +84,4 @@ class Environment():
 
 
 if __name__ == '__main__':
-    print("File does not do anything.")
+    print("Running this file does not do anything.")   

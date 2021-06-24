@@ -26,8 +26,8 @@ class Logger():
             self.columns.extend([f"gate{i}_{xy}" for i in range(2) for xy in ("x", "y", "orig_distance") ])
             self.columns.extend([f"agent_{i}_{xy}" for i in range(len(positions) - 2) for xy in ("x", "y", "orig_distance") ])
             
-            with open(self.output_path, 'w+', newline ='') as file:
-                write = csv.writer(file)
+            with open(self.output_path, 'w+', newline ='') as f:
+                write = csv.writer(f)
                 write.writerows([self.columns])
             self.has_header = True
 
@@ -36,7 +36,10 @@ class Logger():
             row.extend([positions[i][0],positions[i][1], orig_distances[i]])
 
         self.time += 1
-        # writing the data into the file
-        with open(self.output_path, 'a', newline ='') as file:
-            write = csv.writer(file)
+
+        with open(self.output_path, 'a', newline ='') as f:
+            write = csv.writer(f)
             write.writerows([row])
+
+if __name__ == '__main__':
+    print("Running this file does not do anything.")   

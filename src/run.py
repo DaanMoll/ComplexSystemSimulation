@@ -42,7 +42,3 @@ if __name__ == '__main__':
     aniclass = Simulation(env, logging=args.logging, name=args.run_name, animate = animate)
 
     print("Simulation ended")
-
-
-
-

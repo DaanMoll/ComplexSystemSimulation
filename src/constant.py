@@ -11,3 +11,7 @@ WALL_REPULS_FORCE = 5
 LOGGING_PATH = "../data/log/"
 MAX_FRICTION = 0.3
 NaN = float("nan")
+
+
+if __name__ == '__main__':
+    print("Running this file does not do anything.")   

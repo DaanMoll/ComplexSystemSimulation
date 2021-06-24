@@ -50,5 +50,9 @@ if __name__ == '__main__':
     print("Simulation ended")
 
 
+if __name__ == '__main__':
+    print("Running this file does not do anything.")
+
+
 
 
