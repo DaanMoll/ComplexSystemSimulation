@@ -1,5 +1,8 @@
-### Complex System Simulation
+### Crowd Simulation in Python
+## Course Complex System Simulation - Computational Science MsC
 
+By Bram Hoogland, Tian Gian, Daan Moll and Daan Vinken
+![Example gif](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
 Usage:
 ```
 pip3 install -r requirements
