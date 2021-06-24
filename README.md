@@ -2,7 +2,8 @@
 ## Course Complex System Simulation - Computational Science MsC
 
 By Bram Hoogland, Tian Gian, Daan Moll and Daan Vinken
-![Example gif](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+![Example gif](https://s6.gifyu.com/images/ezgif.com-gif-maker8882d12951e48bdd.gif)
+
 Usage:
 ```
 pip3 install -r requirements
