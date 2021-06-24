@@ -27,10 +27,6 @@ if __name__ == '__main__':
     \n\t Name: {args.run_name}\
     \n\t Animate: {animate}")
 
-    # Optional CLI argument for num_agents
-
-    # num_agents=30
-
     densities = np.linspace(0.01, 0.2, 20)
     print(densities)
 
@@ -49,9 +45,6 @@ if __name__ == '__main__':
 
     print("Simulation ended")
 
-
-if __name__ == '__main__':
-    print("Running this file does not do anything.")
 
 
 
