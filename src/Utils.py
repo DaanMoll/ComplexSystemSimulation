@@ -24,7 +24,7 @@ class GATE_TYPES(Enum):
     entrance = "entrance"
 
 class Agent(object):
-    """ Interface class agent"""
+    """ Interface agent"""
     def __init__(self, environment):
         self.pos = (0,0)
         self.environment = environment
@@ -39,3 +39,7 @@ class Agent(object):
     def __str__(self):
         return f"{self.__class__.__name__}: pos: {self.pos}"
         __repr__ = __str__
+
+
+if __name__ == '__main__':
+    print("Running this file does not do anything.")    

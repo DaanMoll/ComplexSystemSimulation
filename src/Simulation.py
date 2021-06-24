@@ -24,16 +24,15 @@ class Simulation(object):
             self.fig, self.ax = plt.subplots(figsize=(32, 32))
             # Then setup FuncAnimation.
             self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                            init_func=self.setup_plot, blit=True, save_count=200)
+                                            init_func=self.setup_plot, blit=True, save_count=1)
             # put save count on 2k if we want to save
-            # plt.show()
+            plt.show()
 
             animation_path = LOGGING_PATH + "/animation"
             os.makedirs(animation_path, exist_ok=True)
-            self.ani.save(f"{LOGGING_PATH}/animation/animation.mp4")
+            self.ani.save(f"{LOGGING_PATH}/animation/animation_{name}.mp4")
         else:
             while self.env.num_agents > 0 and self.env.timesteps < 10000:
-            # while self.env.timesteps < 1200:
                 self.env.timestep()
 
                 if self.logger != None:
@@ -47,10 +46,8 @@ class Simulation(object):
 
                     self.logger.save_position_step(self.env.poslist, orig_distances)
 
-                    print(self.env.poslist, self.env.num_agents)
-
                 if self.env.timesteps % 1000 == 0:
-                    print(self.env.timesteps, self.env.num_agents)
+                    print(f"timestep: {self.env.timesteps} | {self.env.num_agents} agents left.")
 
     def setup_plot(self):
         x = [x[0] for x in self.env.poslist]
@@ -60,7 +57,7 @@ class Simulation(object):
                 transform=self.ax.transAxes, ha="center", fontsize=30, fontstretch='expanded')
 
         # Define
-        self.scat = self.ax.scatter(x[:-1], y[:-1], s = 500)
+        self.scat = self.ax.scatter(x[2:], y[2:], s = 500)
         self.ax.axis([0, 101, -1, 101])
         self.ax.axis("off")
 
@@ -91,5 +88,8 @@ class Simulation(object):
         data = next(self.stream)
         self.title.set_text(f"Agents = {self.env.num_agents}")
 
-        self.scat.set_offsets(data[:-2])
+        self.scat.set_offsets(data[2:])
         return self.scat, self.title,
+
+if __name__ == '__main__':
+    print("Running this file does not do anything.")   
