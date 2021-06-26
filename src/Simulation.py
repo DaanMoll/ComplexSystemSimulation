@@ -29,7 +29,7 @@ class Simulation(object):
             self.fig, self.ax = plt.subplots(figsize=(32, 32))
             # Then setup FuncAnimation.
             self.ani = animation.FuncAnimation(self.fig, self.update, interval=20,
-                                            init_func=self.setup_plot, blit=True, save_count=3000)
+                                            init_func=self.setup_plot, blit=True, save_count=1)
             # put save count on 2k if we want to save
             if show_animation:
                 plt.show()
